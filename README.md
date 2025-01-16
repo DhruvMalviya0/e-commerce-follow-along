@@ -1,4 +1,5 @@
-# e-commerce-follow-along
+# E-commerce-website-demo
+
 ### **Welcome!**
 
 The **Ecommerce Follow-Along** is an exciting, hands-on project where you’ll learn to build a complete e-commerce platform using the MERN stack. With guidance from a mentor, you’ll dive into creating APIs, setting up user authentication, designing databases, and crafting a reliable backend with Node.js and Express.
@@ -55,6 +56,20 @@ By the end of this project, you’ll be able to:
 
 ---
 
-## **MILESTONE 3**
+## **Milestones**
 
-Successfully connected to mongoDB database
+### **Milestone 1**
+Successfully set up the project environment and initialized the MERN stack.
+
+### **Milestone 2**
+Established connection with MongoDB and tested basic CRUD operations.
+
+### **Milestone 3**
+Successfully connected to the MongoDB database and created a working **Sign-Up Page**.
+
+#### **Sign-Up Page Features:**
+- User input fields for **name**, **email**, and **password**.
+- Form validation for required fields and valid email formats.
+- Integration with the backend to store user details securely in the database.
+
+---
