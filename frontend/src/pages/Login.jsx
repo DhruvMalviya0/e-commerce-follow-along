@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 // import axios from "axios";
 
-
-
 function LoginPage() {
   const [credentials, setCreds] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setCreds({
       ...credentials,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -31,11 +29,16 @@ function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-12">
       <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Sign in to your account</h2>
+          <h2 className="text-3xl font-bold text-gray-800">
+            Sign in to your account
+          </h2>
         </div>
         <form className="space-y-6" onSubmit={handleClickLogin}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email address
             </label>
             <input
@@ -50,7 +53,10 @@ function LoginPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
@@ -63,7 +69,10 @@ function LoginPage() {
               onChange={handleChange}
               className="w-full mt-2 px-4 py-3 border rounded-lg shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
             />
-            <a href="#" className="text-purple-600 hover:text-purple-500 block mt-2">
+            <a
+              href="#"
+              className="text-purple-600 hover:text-purple-500 block mt-2"
+            >
               Forgot your password?
             </a>
           </div>
