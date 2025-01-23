@@ -11,10 +11,7 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 // create user
-router.post(
-  "/create-user",
-  upload.single("file"),
-  catchAsyncErrors(async (req, res, next) => {
+router.post("/create-user",upload.single("file"),catchAsyncErrors(async (req, res, next) => {
     console.log("create user");
     const { name, email, password } = req.body;
 
@@ -42,9 +39,9 @@ router.post(
     console.log("At Create ", "Password:", password, "Hash: ", hashedPassword);
 
     const user = await User.create({
-      name: name,
-      email: email,
-      password: hashedPassword,
+      name,
+      email,
+      password,
       avatar: {
         public_id: req.file?.filename || "",
         url: fileurl,
@@ -54,5 +51,43 @@ router.post(
     res.status(201).json({ success: true, user });
   })
 );
+
+router.post("/login-user", catchAsyncErrors(async (req, res, next) => {
+  console.log("Logging in user...")
+
+  let { email, password } = req.body;
+  email = email;
+  password = password;
+
+  if (!email || !password) {
+    return next(new ErrorHandler("Please provide me both email and password."))
+  }
+
+  const user_authen = await User.findOne({ email }).select("+password")
+  if (!user_authen) {
+    console.log("No user with this  email")
+    return next(new ErrorHandler("no email found.make account first"))
+  }
+
+  const isPasswordMatched = await bcrypt.compare(password, user_authen.password)
+  console.log("password matched result: ", isPasswordMatched)
+  console.log("at auth - password, ", password, "hash: ", user_authen.password)
+
+  if (!isPasswordMatched) {
+    console.log("password dosen't match")
+    return next(new ErrorHandler("password fail", 401))
+  }
+  res.status(200).json({
+    success: true,
+    message: "succesfull",
+    user: {
+      id: user_authen.id,
+      name: user_authen.name,
+      email: user_authen.email,
+    },
+  })
+
+
+}))
 
 module.exports = router;
