@@ -1,6 +1,6 @@
-//eslint-disable-next-line
 import React, { useState, useEffect } from "react";
-import { AiOutlinePlusCircle } from "react-icons/ai"
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import axios from "axios";
 
 const CreateProduct = () => {
     const [images, setImages] = useState([]);
@@ -14,74 +14,72 @@ const CreateProduct = () => {
     const [email, setEmail] = useState("");
 
     const categoriesData = [
-        {
-            title: "Electronics",
-        },
-        {
-            title: "Clothing",
-        },
-        {
-            title: "Books",
-        },
-        {
-            title: "Home & Garden",
-        }
+        { title: "Electronics" },
+        { title: "Clothing" },
+        { title: "Books" },
+        { title: "Home & Garden" },
     ];
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-
         setImages((prevImages) => prevImages.concat(files));
 
         const imagePreviews = files.map((file) => URL.createObjectURL(file));
-
         setPreviewImages((prevPreviews) => prevPreviews.concat(imagePreviews));
-
-
-        useEffect(() => {
-            // Clean up function to revoke object URLs when component unmounts
-            return () => {
-                previewImages.forEach((url) => URL.revokeObjectURL(url));
-            };
-        }, [previewImages]);
     };
 
-    const handleSubmit = (e) => {
+    // Cleanup function to revoke object URLs when component unmounts
+    // useEffect(() => {
+    //     return () => {
+    //         previewImages.forEach((url) => URL.revokeObjectURL(url));
+    //     };
+    // }, [previewImages]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Send product data to server
-        const productData = {
-            name,
-            description,
-            category,
-            tags,
-            price,
-            stock,
-            images,
-            email,
-        }
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("category", category);
+        formData.append("tags", tags);
+        formData.append("price", price);
+        formData.append("stock", stock);
+        formData.append("email", email);
 
-        console.log("Product data: ", productData);
-        alert("Product created successfully!");
+        // Append image files to formData
+        images.forEach((image) => {
+            formData.append("images", image);
+        });
 
-        // Reset form inputs
-        setName("");
-        setDescription("");
-        setCategory("");
-        setTags([]);
-        setPrice("");
-        setStock("");
-        setEmail("");
-        setImages([]);
-        setPreviewImages([]);
+        const config = {
+            headers: {
+                "Content-type": "multipart/form-data",
+                "Accept": "any",
+            },
+        };
+
+        axios.post("http://localhost:8000/api/v2/product/create-product", formData, config).then((res) => {
+            console.log("Response: ", res.data);
+        }).catch((err) => {
+            console.log("Error: ", err);
+        });
+
+        // try {
+        //     const response = await axios.post("http://localhost:8000/api/v2/product/create-product", formData, config);
+        //     console.log("Response: ", response.data);
+        //     alert("Product created successfully!");
+        // } catch (error) {
+        //     console.log("Error: ", error);
+        //     alert("An error occurred while creating the product.");
+        // }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-12 
-        flex flex-col justify-center items-center sm:px-6 lg:px-8">
-            <div className="w-[90%]max-w-[600px] pxbd-white shadow h-auto rounded-[4x] p-4 mx-auto">
-                <h5 className="mt-6-text-center text-3xl font-bold text-gra-900">Craete Product</h5>
-                <form action={handleSubmit}>
+        <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-12 flex flex-col justify-center items-center sm:px-6 lg:px-8">
+            <div className="w-[90%] max-w-[600px] pxbd-white shadow h-auto rounded-[4px] p-4 mx-auto">
+                <h5 className="mt-6 text-center text-3xl font-bold text-gray-900">Create Product</h5>
+                <form onSubmit={handleSubmit}>
                     <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">
                             Email <span className="text-red-500">*</span>
@@ -131,7 +129,9 @@ const CreateProduct = () => {
                             className="w-full p-2 border rounded"
                             required
                         >
-                            <option className="blocktext-s font-medium text-gray-700" value="">Select a category</option>
+                            <option className="text-sm font-medium text-gray-700" value="">
+                                Select a category
+                            </option>
                             {categoriesData.map((category) => (
                                 <option key={category.title} value={category.title}>
                                     {category.title}
@@ -183,40 +183,40 @@ const CreateProduct = () => {
                             <label className="block text-sm font-medium text-gray-700">
                                 Product Images <span className="text-red-500">*</span>
                             </label>
-                            <input 
-                                type="file" 
-                                id = "upload" 
-                                multiple 
-                                onChange={handleImageChange} 
-                                required 
+                            <input
+                                type="file"
+                                id="upload"
+                                multiple
+                                onChange={handleImageChange}
+                                required
                             />
-                            // Add image upload button
                             <label htmlFor="upload" className="cursor-pointer p-2">
                                 <AiOutlinePlusCircle size={20} color="#555" />
                             </label>
                         </div>
-                        // Display uploaded images
                         <div className="flex flex-wrap mt-2">
                             {previewImages.map((image, index) => (
-                                <img 
-                                    src={image} 
-                                    key={index} 
-                                    alt="Product Image" 
-                                    className="w-[100px] h-[100px] object-cover m-2" 
+                                <img
+                                    src={image}
+                                    key={index}
+                                    alt="Product Image"
+                                    className="w-[100px] h-[100px] object-cover m-2"
                                 />
                             ))}
                         </div>
                     </div>
                     <div className="mt-6 flex justify-center">
-                        <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                        <button
+                            type="submit"
+                            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                        >
                             Create Product
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default CreateProduct;
