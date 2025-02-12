@@ -279,3 +279,200 @@ This lesson emphasized the foundation of creating and submitting product data. F
 
 
 Feel free to modify the description or formatting if needed! Let me know if you’d like me to enhance this further or add more details.
+
+---
+
+🛠️ Mongoose Schema and Endpoint Creation (Milestone 10)
+Milestone 10,
+📚 What I have Done:
+1. Product Schema
+Define the structure for your product data, including fields like:
+Name: The name of the product.
+Description: A short overview of the product.
+Price: The product price.
+Image URLs: URLs for product images.
+Add validations for each field, such as:
+Making required fields mandatory.
+Ensuring correct data types (e.g., strings, numbers).
+2. Endpoint Creation
+Build a POST endpoint that will:
+Accept product data from the frontend.
+Validate the incoming data using the schema.
+Save the valid data into your MongoDB database.
+🔒 Why Validation Matters
+Data Integrity: Ensures only clean, accurate, and valid data gets stored in the database.
+Error Prevention: Helps catch mistakes early, improving application reliability.
+Milestone 11: Fetch and Display Products 📝
+Overview
+In this milestone, we will implement an API endpoint to send all product data to the frontend. On the frontend, we will fetch this data and dynamically render it using the Product Card component.
+
+Steps to Complete Milestone 11
+Backend (API Endpoint)
+Create a new API route in your backend server to fetch all product data.
+Query the database to retrieve all products.
+Send the product data as a JSON response.
+Example (Node.js with Express & MongoDB)
+app.get('/api/products', async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching products" });
+    }
+});
+Frontend (Fetching Data & Displaying Products)
+Write a function to fetch product data from the API.
+Store the fetched data in a state variable.
+Pass the data to the Product Card component and render it dynamically.
+Example (React)
+import { useEffect, useState } from 'react';
+import ProductCard from './ProductCard';
+
+const ProductList = () => {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    return (
+        <div>
+            {products.map(product => (
+                <ProductCard key={product._id} product={product} />
+            ))}
+        </div>
+    );
+};
+
+export default ProductList;
+Product Card Component
+Ensure that the ProductCard component correctly receives and displays the product data.
+
+const ProductCard = ({ product }) => {
+    return (
+        <div className="product-card">
+            <h2>{product.name}</h2>
+            <p>{product.description}</p>
+            <p>Price: ${product.price}</p>
+        </div>
+    );
+};
+
+export default ProductCard;
+Summary
+✅ Created an API endpoint to fetch all products. ✅ Implemented a function to retrieve product data in the frontend. ✅ Displayed the products dynamically using the ProductCard component.
+
+Milestone 11 complete! 🎉
+
+Milestone 12: My Products Page 🌟
+Milestone 12! 🌟
+In this milestone, we will create a "My Products" page that displays all the products added by a specific user based on their email. We will write an API endpoint that fetches products associated with the logged-in user's email, stored in MongoDB.
+
+--
+
+Steps for Milestone 12 📝
+Backend (Filtering Products by User Email)
+Create a new API route in the backend to fetch products filtered by the user's email.
+Query MongoDB to retrieve products that match the logged-in user's email.
+Send the filtered product data as a JSON response.
+Example (Node.js with Express & MongoDB)
+app.get('/api/my-products', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+        const products = await Product.find({ userEmail: email });
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching products" });
+    }
+});
+Frontend (Fetching and Displaying User-Specific Products)
+Write a function to fetch product data for the logged-in user.
+Store the fetched data in a state variable.
+Pass the data to the Product Card component and render it dynamically.
+Example (React)
+import { useEffect, useState } from 'react';
+import ProductCard from './ProductCard';
+
+const MyProducts = ({ userEmail }) => {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchMyProducts = async () => {
+            try {
+                const response = await fetch(`/api/my-products?email=${userEmail}`);
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        if (userEmail) {
+            fetchMyProducts();
+        }
+    }, [userEmail]);
+
+    return (
+        <div>
+            {products.map(product => (
+                <ProductCard key={product._id} product={product} />
+            ))}
+        </div>
+    );
+};
+
+export default MyProducts;
+Product Card Component
+Ensure that the ProductCard component correctly receives and displays the product data.
+
+const ProductCard = ({ product }) => {
+    return (
+        <div className="product-card">
+            <h2>{product.name}</h2>
+            <p>{product.description}</p>
+            <p>Price: ${product.price}</p>
+        </div>
+    );
+};
+
+export default ProductCard;
+Summary
+✅ Created an API endpoint to fetch user-specific products. ✅ Implemented a function to retrieve filtered product data in the frontend. ✅ Displayed the products dynamically using the ProductCard component.
+
+This lesson helps in understanding how to filter data with specific constraints and send it to the client efficiently. 🎯
+
+Milestone 12 complete!
+
+Milestone 13 - Edit Uploaded Products 🌟
+Today, we will add functionality to edit the uploaded products. We will add an edit button and then write a backend endpoint to update the new details inside the MongoDB database.
+
+Learning Goals 🎯
+How to write an endpoint that updates existing data in MongoDB.
+How to auto-fill the form with previous data and provide an option to edit.
+Steps for Milestone 13 📝
+Write an endpoint that receives new data and updates the existing data inside MongoDB.
+In the frontend, add an edit button to the product card.
+When the edit button is clicked, send the existing data to the form, auto-fill it, and allow editing.
+Save the updated data back to the database.
+Milestone 14 - Delete Products from MongoDB 🗑️
+In this milestone, we will implement functionality to delete a product using its specific ID from MongoDB.
+
+Learning Goals 🎯
+How to write an endpoint that deletes a product using its ID from MongoDB.
+Steps for Milestone 14 📝
+Write an endpoint that deletes data from MongoDB using the product ID.
+In the frontend, add a delete button to the product card.
+When the delete button is clicked, send the product ID to the server endpoint.

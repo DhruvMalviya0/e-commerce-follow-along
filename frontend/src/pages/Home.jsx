@@ -1,77 +1,52 @@
-import Product from "../components/products";
-
-const ProductDetails = [
-    {
-        name:"Product 1",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 100,
-    },
-    {
-        name: "Product 2",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 200,
-    },
-    {
-        name: "Product 3",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 300,
-    },
-    {
-        name: "Product 4",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 400,
-    },
-    {
-        name: "Product 5",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 500,
-
-    },
-    {
-        name: "Product 6",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 600,
-    },
-    {
-        name: "Product 7",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 700,
-    },
-    {
-        name: "Product 8",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 800,
-    },
-    {
-        name: "Product 9",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limited-time product offering.",
-        price: 900,
-    },
-    {
-        name: "Product 10",
-        image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
-        description: "This is a limeted-time product offering.",
-        price: 1000,
-    },
-];
+import React, { useEffect, useState } from 'react';
+import Product from '../components/Products';
 
 export default function Home() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch('http://localhost:8000/api/v2/product/get-products')
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`Network response was not ok: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log("📦 API Response:", data);
+                if (!data.products) {
+                    throw new Error("API response does not contain 'products'");
+                }
+                setProducts(data.products);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("❌ Error fetching products", err);
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+
     return (
-        <div className="w-full min-h-screen bg-neutral-800">
-            <div className="grid grid-cols-5 gap-4 p-4">
-                {
-                    ProductDetails.map((product, index) => <Product key= {index} {...product}/>) 
-                    }
+        <div className="w-full min-h-screen bg-gray-800 p-6">
+            <h1 className="text-3xl text-center text-white py-6">Product List</h1>
+
+            {loading && <p className="text-white text-center">Loading...</p>}
+            {error && <p className="text-red-500 text-center">Error: {error}</p>}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {products.length > 0 ? (
+                    products.map((product) => (
+                        <Product key={product._id || product.id} {...product} />
+                    ))
+                ) : (
+                    !loading && !error && (
+                        <p className="text-center text-white">No products found.</p>
+                    )
+                )}
             </div>
         </div>
-    )
+    );
 }
