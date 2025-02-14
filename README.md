@@ -476,3 +476,32 @@ Steps for Milestone 14 📝
 Write an endpoint that deletes data from MongoDB using the product ID.
 In the frontend, add a delete button to the product card.
 When the delete button is clicked, send the product ID to the server endpoint.
+
+
+### Steps for Milestone 15:
+
+1. **Created a New Nav Component**
+   - Designed a `Navbar` component containing links to all the required pages:
+     - Home
+     - My-products
+     - Add product
+     - Cart
+
+2. **Made the Navbar Responsive**
+   - Implemented a responsive design to ensure smooth functionality across all screen sizes.
+   - Utilized Tailwind CSS for styling and media queries to adapt to different devices.
+
+3. **Added Navbar to All Pages**
+   - Integrated the `Navbar` component into all pages to ensure seamless navigation.
+   - Ensured consistency in navigation across the application.
+
+4. **Enabled Smooth Navigation**
+   - Used `react-router-dom` for handling client-side routing.
+   - Ensured the navigation experience was intuitive and user-friendly.
+
+### Learning Outcomes:
+- Understood how to create a dynamic and reusable Navbar component.
+- Learned how to manage navigation in a React application efficiently.
+- Gained experience in implementing responsive design principles.
+
+
