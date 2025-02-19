@@ -504,4 +504,23 @@ When the delete button is clicked, send the product ID to the server endpoint.
 - Learned how to manage navigation in a React application efficiently.
 - Gained experience in implementing responsive design principles.
 
+  ---
+
+# Milestone 16 - Product Info Page  
+
+### will create a product info page that displays all the product data, allows users to choose the quantity, and includes an "Add to Cart" button.  
+
+## Learning Goals 🎯  
+By the end of this milestone:  
+- How to create a new page to display each product.  
+- How to add a quantity selector and an "Add to Cart" button.  
+
+## Steps for Milestone 16 📝  
+1. Create a new page that displays all the product data.  
+2. Implement a quantity selector for each product.  
+3. Add an "Add to Cart" button to allow users to add products with the selected quantity.
+
+
+---
+
 
