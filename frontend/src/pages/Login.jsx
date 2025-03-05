@@ -15,7 +15,7 @@ const Login = () => {
       const response = await axios.post("http://localhost:8000/login-user", {email,password});
       console.log(response.data);
     } catch (error) {
-      console.error("There was an error logging in..!!", error);
+      console.error("There was an error logging in..😭🙏!!", error);
     }
   };
 
@@ -24,7 +24,7 @@ const Login = () => {
       <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-800">Welcome Back!</h2>
-          <p className="text-gray-500 mt-2">Log In to your account 😊</p>
+          <p className="text-gray-500 mt-2">Log In to your account 🤫🧏‍♂️</p>
         </div>
         <form className="space-y-6 mt-6" onSubmit={handleClickLogin}>
           <div>
@@ -105,7 +105,7 @@ const Login = () => {
           </div>
 
           <div className="flex justify-center items-center mt-4 text-sm">
-            <span>Don't have an account?</span>
+            <span>Dont have an account?</span>
             <Link
               to="/signup"
               className="text-blue-600 hover:text-blue-500 ml-2 font-medium transition-colors"

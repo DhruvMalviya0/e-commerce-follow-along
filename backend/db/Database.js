@@ -1,13 +1,13 @@
+// Load environment variables
+if (process.env.NODE_ENV !== "PRODUCTION") {
+    require("dotenv").config({
+        path: "./config/.env",
+    });
+}
 const mongoose = require('mongoose');
 
 const connectDatabase = () => {
-    if (!process.env.MONGODB_URI) {
-        console.error("MONGODB_URI is not defined in the environment variables.");
-        process.exit(1);
-    }
-
-    mongoose
-        .connect(process.env.MONGODB_URI, {
+    mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })

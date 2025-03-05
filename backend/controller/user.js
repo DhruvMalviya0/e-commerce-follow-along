@@ -76,7 +76,7 @@ router.post("/login-user",catchAsyncErrors(async(req, res, next)=>{
     console.log("At Auth - password", password, "Hash: ", user_authen.password);
     if(!isPasswordMatched){
         console.log("Password not matched")
-        return next(new ErrorHandler("Autehncation failed,Invalid password",401));
+        return next(new ErrorHandler("Authencation failed,Invalid password",401));
 
     }
     res.status(200).json({
@@ -90,5 +90,28 @@ router.post("/login-user",catchAsyncErrors(async(req, res, next)=>{
     });
 
 }));
+
+router.get("/profile", catchAsyncErrors( async (req, res, next)=>{
+    const {email} = req.query
+
+    if (!email) {
+        return next(new ErrorHandler("Please provide email" , 400));
+    }
+    const user = await User.findOne({email});
+    if(!user){
+        return next (new ErrorHandler("User not found", 400))
+    }
+    res.status(200).json({
+        success:true,
+        user:{
+            name:user.name,
+            email:user.email,
+            phone:user.phone,
+            avatarURL:user.avatar.url
+        },
+        addresses: user.addresses
+    });
+}))
+
 
 module.exports=router;
