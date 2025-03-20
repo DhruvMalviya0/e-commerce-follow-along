@@ -129,3 +129,23 @@ Build a cart page that displays products inside the cart using the endpoint crea
 ## **Milestone 20**
 
 Create an endpoint to send user data (including profile photo, name, email, and address).
+
+## **Milestone 21**
+
+Create a frontend form that will take inputs for country, city, address1, address2, zip code, and address type.
+Will also display address if given.
+
+## **Milestone 22**
+
+Create a backend endpoint that receives an address from the frontend and stores it inside the user's profile in the database.
+
+## **Milestone 23**
+
+Added a page to select address during cart checkout
+
+## **Milestone 24**
+
+Added a page to confirm order and order details while checking out
+
+## **Milestone 25**
+Added backend endpoint for placing orders

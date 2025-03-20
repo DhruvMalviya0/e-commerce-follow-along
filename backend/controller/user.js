@@ -113,5 +113,51 @@ router.get("/profile", catchAsyncErrors( async (req, res, next)=>{
     });
 }))
 
+// Add address
+router.post('/add-address', catchAsyncErrors(async (req, res, next) => {
+    const { email, country, city, address1, address2, zipcode, addresstype } = req.body;
+
+    if (!email) {
+        return next(new ErrorHandler("Please provide an email", 400));
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+    }
+
+    user.addresses.push({
+        country,
+        city,
+        address1,
+        address2,
+        zipCode: zipcode,
+        addressType: addresstype
+    });
+
+    await user.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Address added successfully",
+        addresses: user.addresses
+    });
+}));
+
+router.get("/addresses", catchAsyncErrors(async (req, res, next) => {
+    const { email } = req.query;
+
+    if (!email) {
+        return next(new ErrorHandler("Please provide an email", 400));
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+    }
+    res.status(200).json({
+        success: true,
+        addresses: user.addresses
+    });
+}))
 
 module.exports=router;

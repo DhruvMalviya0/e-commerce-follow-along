@@ -1,30 +1,41 @@
 //eslint-disable-next-line
 import React from 'react';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css'
-import {Home, LoginPage } from './Routes/route.js';
-import { SignupPage } from './Routes/route.js';
-import { CreateProduct } from './Routes/route.js';
-import { MyProducts } from './Routes/route.js';
-import {Cart} from './Routes/route.js';
-import { ProductDetails } from './Routes/route.js';
-import { Profile } from './Routes/route.js';
+import { AuthProvider } from "./context/AuthContext";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import SignUpPage from "./pages/SignUpPage";
+import ProductDetails from "./pages/productDetails";
+import CreateProduct from "./pages/createProduct";
+import MyProducts from "./pages/myProducts";
+import Cart from "./pages/cart";
+import Profile from "./pages/profile";
+import CreateAddress from "./pages/createAddress";
+import Products from "./pages/products";
+import SelectAddress from "./pages/selectAddress";
+import OrderConfirmation from "./pages/orderConfirmation";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/create-product" element={<CreateProduct />}></Route>
-        <Route path="/products" element={<MyProducts/>}></Route>
-        <Route path='/cart' element={<Cart />} />
-        <Route path="/create-product/:id" element={<CreateProduct />}></Route>
-        <Route path="/product/:id" element={<ProductDetails />}></Route>
-        <Route path="/profile" element={<Profile/>}></Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/create-product" element={<CreateProduct />} />
+          <Route path="/my-products" element={<MyProducts />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/create-address" element={<CreateAddress />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/select-address" element={<SelectAddress />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

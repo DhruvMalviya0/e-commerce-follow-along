@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleClickLogin = async (event) => {
     event.preventDefault();
@@ -14,6 +17,10 @@ const Login = () => {
     try {
       const response = await axios.post("http://localhost:8000/login-user", {email,password});
       console.log(response.data);
+      // Store user data in context
+      login(response.data);
+      // Redirect to home page
+      navigate('/');
     } catch (error) {
       console.error("There was an error logging in..😭🙏!!", error);
     }

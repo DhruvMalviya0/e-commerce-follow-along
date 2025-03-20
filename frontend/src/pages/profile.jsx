@@ -1,8 +1,10 @@
 import {useEffect, useState} from "react";
 import Navbar from "../components/nav.jsx";
-import AddressCard from "../components/addresscard.jsx";
+import AddressCard from "../components/addressCard.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
+    const navigate = useNavigate();
     const [personalDetails, setPersonalDetails] = useState({
         name: "",
         email: "",
@@ -101,7 +103,7 @@ export default function Profile() {
                             </h1>
                         </div>
                         <div className="w-full h-max p-5">
-                            <button className="w-max px-3 py-2 bg-neutral-600 text-neutral-100 rounded-md text-center hover:bg-neutral-100 hover:text-black transition-all duration-100">
+                            <button onClick={() => navigate('/create-address')} className="w-max px-3 py-2 bg-neutral-600 text-neutral-100 rounded-md text-center hover:bg-neutral-100 hover:text-black transition-all duration-100">
                                 Add Address
                             </button>
                         </div>
