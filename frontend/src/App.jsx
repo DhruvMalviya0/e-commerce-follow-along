@@ -15,6 +15,7 @@ import CreateAddress from "./pages/createAddress";
 import Products from "./pages/products";
 import SelectAddress from "./pages/selectAddress";
 import OrderConfirmation from "./pages/orderConfirmation";
+import Orders from "./pages/orders";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/select-address" element={<SelectAddress />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/orders" element={<Orders />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -15,10 +15,12 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8000/login-user", {email,password});
-      console.log(response.data);
+      const response = await axios.post("http://localhost:8000/api/v2/user/login-user", {email, password});
+      console.log("Login successful:", response.data);
+      
       // Store user data in context
       login(response.data);
+      
       // Redirect to home page
       navigate('/');
     } catch (error) {

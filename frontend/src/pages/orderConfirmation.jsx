@@ -50,12 +50,22 @@ const OrderConfirmation = () => {
         setError(null);
 
         try {
+            const orderData = {
+                email: email,
+                shippingAddress: selectedAddress,
+                orderItems: cartItems.map(item => ({
+                    product: item._id,
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                    image: item.images[0]
+                })),
+                totalAmount: totalAmount
+            };
+
             const response = await axios.post(
-                "http://localhost:8000/api/v2/order/place-order",
-                {
-                    email: email,
-                    shippingAddress: selectedAddress
-                },
+                "http://localhost:8000/api/v2/order/create-order",
+                orderData,
                 {
                     headers: {
                         "Content-Type": "application/json"
@@ -65,7 +75,7 @@ const OrderConfirmation = () => {
 
             if (response.status === 201) {
                 alert("Order placed successfully!");
-                navigate('/'); // Redirect to home page
+                navigate('/orders'); // Redirect to orders page instead of home
             }
         } catch (error) {
             console.error("Error placing order:", error);

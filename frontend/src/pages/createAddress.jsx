@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/nav';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function CreateAddress() {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [formData, setFormData] = useState({
         country: "",
         city: "",
@@ -13,6 +15,19 @@ function CreateAddress() {
         zipcode: 0,
         addresstype: ""
     });
+
+    // Use useEffect for redirection
+    useEffect(() => {
+        // Redirect to login if not authenticated
+        if (!user || !user.email) {
+            navigate('/login');
+        }
+    }, [user, navigate]);
+
+    // If not authenticated, don't render the form
+    if (!user || !user.email) {
+        return null;
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,7 +42,7 @@ function CreateAddress() {
 
         const addressData = {
             ...formData,
-            email: "dummy@gmail.com"
+            email: user.email
         };
 
         try {

@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const errorHandler = require("./middleware/error");
 const product = require("./controller/product");
+const order = require("./controller/order");
 const path = require('path');
 app.use(errorHandler);
 
@@ -18,8 +19,10 @@ app.use(cors());
 
 
 app.use('/products', express.static(path.join(__dirname, 'products')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/v2/user", user);
 app.use("/api/v2/product", product);
+app.use("/api/v2/order", order);
 
 
 if (process.env.NODE_ENV !== "PRODUCTION") {

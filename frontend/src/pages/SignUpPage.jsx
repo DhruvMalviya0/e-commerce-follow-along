@@ -1,9 +1,10 @@
 //eslint-disable-next-line
 import React, { useState, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const SignupPage = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +12,8 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleFileSubmit = (e) => {
     const file = e.target.files[0];
@@ -19,7 +22,7 @@ const SignupPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Create a new FormData instance and append data
@@ -37,11 +40,25 @@ const SignupPage = () => {
       },
     };
 
-    // Send the POST request to the backend
-    axios
-      .post("http://localhost:8000/create-user", newForm, config)
-      .then((res) => console.log("Response: ", res.data)) // Log successful response
-      .catch((err) => console.log("Error: ", err)); // Log error
+    try {
+      // Send the POST request to the backend
+      const response = await axios.post("http://localhost:8000/api/v2/user/create-user", newForm, config);
+      console.log("Response: ", response.data);
+      
+      // Login the user after successful registration
+      login({
+        user: {
+          id: response.data.user._id,
+          name: response.data.user.name,
+          email: response.data.user.email
+        }
+      });
+      
+      // Redirect to home page
+      navigate('/');
+    } catch (err) {
+      console.log("Error: ", err);
+    }
   };
 
   return (

@@ -4,9 +4,10 @@ const Order = require('../model/order');
 const User = require('../model/user');
 const Product = require('../model/product');
 
-router.post('/place-order', async (req, res) => {
+// Create order
+router.post('/create-order', async (req, res) => {
     try {
-        const { email, shippingAddress } = req.body;
+        const { email, shippingAddress, orderItems, totalAmount } = req.body;
 
         // Validate request data
         if (!email) {
@@ -15,36 +16,15 @@ router.post('/place-order', async (req, res) => {
         if (!shippingAddress) {
             return res.status(400).json({ error: "Shipping address is required" });
         }
+        if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
+            return res.status(400).json({ error: "Order items are required" });
+        }
 
-        // Find user and populate their cart with product details
-        const user = await User.findOne({ email }).populate({
-            path: 'cart.productId',
-            model: 'Product'
-        });
-
+        // Find user
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-
-        if (!user.cart || user.cart.length === 0) {
-            return res.status(400).json({ error: "Cart is empty" });
-        }
-
-        // Calculate total amount and prepare order items
-        let totalAmount = 0;
-        const orderItems = user.cart.map(item => {
-            const product = item.productId;
-            const itemTotal = product.price * item.quantity;
-            totalAmount += itemTotal;
-
-            return {
-                product: product._id,
-                name: product.name,
-                quantity: item.quantity,
-                price: product.price,
-                image: product.images[0]
-            };
-        });
 
         // Create new order
         const order = new Order({
@@ -63,10 +43,12 @@ router.post('/place-order', async (req, res) => {
         await user.save();
 
         // Update product stock
-        for (const item of user.cart) {
-            const product = item.productId;
-            product.stock -= item.quantity;
-            await product.save();
+        for (const item of orderItems) {
+            const product = await Product.findById(item.product);
+            if (product) {
+                product.stock -= item.quantity;
+                await product.save();
+            }
         }
 
         res.status(201).json({
@@ -81,7 +63,7 @@ router.post('/place-order', async (req, res) => {
 });
 
 // Get user's orders
-router.get('/user-orders', async (req, res) => {
+router.get('/get-orders', async (req, res) => {
     try {
         const { email } = req.query;
         
@@ -95,7 +77,6 @@ router.get('/user-orders', async (req, res) => {
         }
 
         const orders = await Order.find({ user: user._id })
-            .populate('orderItems.product')
             .sort({ createdAt: -1 });
 
         res.status(200).json({
