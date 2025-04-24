@@ -1,9 +1,7 @@
-//eslint-disable-next-line
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import Navbar from "../components/nav";
+import axios from "../axiosConfig";
 
 const CreateProduct = () => {
     const { id } = useParams();
@@ -78,7 +76,7 @@ const CreateProduct = () => {
         try {
             if (isEdit) {
                 const response = await axios.put(
-                    `http://localhost:8000/api/v2/product/update-product/${id}`,
+                    `/api/v2/product/update-product/${id}`,
                     formData,
                     {
                         headers: {
@@ -89,11 +87,11 @@ const CreateProduct = () => {
 
                 if (response.status === 200) {
                     alert("Product updated successfully");
-                    navigate("/products");
+                    navigate("/myproducts");
                 }
             } else {
                 const response = await axios.post(
-                    "http://localhost:8000/api/v2/product/create-product",
+                    "/api/v2/product/create-product",
                     formData,
                     {
                         headers: {
@@ -122,9 +120,7 @@ const CreateProduct = () => {
     };
 
     return (
-        <div><Navbar/>
         <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-12 flex flex-col justify-center items-center sm:px-6 lg:px-8">
-            
             <div className="w-[90%] max-w-[600px] bg-white shadow h-auto rounded-[4px] p-4 mx-auto">
                 <h5 className="mt-6 text-center text-3xl font-bold text-gray-900">{isEdit ? "Edit Product" : "Create Product"}</h5>
                 <form onSubmit={handleSubmit}>
@@ -257,7 +253,6 @@ const CreateProduct = () => {
                 </form>
             </div>
         </div>
-    </div>
     );
 };
 

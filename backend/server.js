@@ -1,39 +1,41 @@
-const userrouter = require('./controller/user');
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const mongoose = require('mongoose'); // Add Mongoose for MongoDB connection
-const app = express();
-const port = 8000;
-const product = require("./controller/product");
-const user = require("./controller/user");
-const order = require("./controller/order"); // Import order controller
-const path =require('path');
+const app = require("./app");
+const connectDatabase = require("./db/Database");
+const path = require("path");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use("/api/v2/user", user);
-app.use("/api/v2/product", product);
-app.use("/api/v2/order", order); // Mount order routes
-app.use('/products',express.static(path.join(__dirname, 'products')));
-
-// Enable CORS if needed (if frontend and backend are on different ports)
-// Body parsing middleware for form data
-app.use(express.json());  // For JSON data
-app.use(express.urlencoded({ extended: true }));  // For form-encoded data
-app.use(userrouter); // For
-// File upload setup using multer
-const upload = multer({ dest: 'uploads/' });
-
-// Connect to MongoDB
-const mongoURI = 'mongodb+srv://raphdesantos:raph13600@cluster0.hj8ng.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; // Replace with your MongoDB URI
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅Database connection successful"))
-  .catch((err) => console.error("❌Database connection error:", err));
-
-
-// Start server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// Handle uncaught exceptions
+process.on("uncaughtException", (err) => {
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to an uncaught exception...`);
+    process.exit(1);
 });
+
+// Load environment variables
+if (process.env.NODE_ENV !== "PRODUCTION") {
+    require("dotenv").config({
+        path: path.join(__dirname, "config", ".env"),
+    });
+}
+
+// Verify environment variables
+if (!process.env.PORT || !process.env.MONGODB_URI) {
+    console.error("Required environment variables are missing. Please check your .env file.");
+    process.exit(1);
+}
+
+// Connect to the database
+connectDatabase();
+
+// Start the server
+const server = app.listen(process.env.PORT, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT}`);
+});
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err) => {
+    console.log(`Error: ${err.message}`);
+    console.log("Shutting down the server due to unhandled promise rejection");
+    server.close(() => {
+        process.exit(1);
+    });
+});
+

@@ -1,131 +1,135 @@
-import { useState } from 'react';
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import axios from "axios";
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import axios from "../axiosConfig";
+import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
+import {Link} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [visible, setVisible] = useState(false);
+import {useDispatch} from "react-redux";
+import { setemail } from "@/store/userAction";
+
+axios.defaults.withCredentials = true;
+
+function Login() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { login } = useAuth();
 
-  const handleClickLogin = async (event) => {
-    event.preventDefault();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [visible, setVisible] = useState(false);
+    const [error, setError] = useState("");
 
-    try {
-      const response = await axios.post("http://localhost:8000/api/v2/user/login-user", {email, password});
-      console.log("Login successful:", response.data);
-      
-      // Store user data in context
-      login(response.data);
-      
-      // Redirect to home page
-      navigate('/');
-    } catch (error) {
-      console.error("There was an error logging in..😭🙏!!", error);
-    }
-  };
+    const handleClickLogin = async (event) => {
+      event.preventDefault();
+      setError("");
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-200 via-blue-300 to-blue-700">
-      <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Welcome Back!</h2>
-          <p className="text-gray-500 mt-2">Log In to your account 🤫🧏‍♂️</p>
-        </div>
-        <form className="space-y-6 mt-6" onSubmit={handleClickLogin}>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <div className="mt-1">
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
+      try {
+        const response = await axios.post("/api/v2/user/login-user", {
+          email,
+          password
+        });
+        
+        if (response.data && response.data.success) {
+          dispatch(setemail(email));
+          navigate("/");
+        } else {
+          setError(response.data?.message || "Login failed");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        setError(error.response?.data?.message || "Login failed. Please try again.");
+      }
+    };
+
+    return (
+        <div
+            className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-12">
+          <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg">
+            {/* Header */}
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-800">Sign in to your account</h2>
             </div>
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <div className="mt-1 relative">
-              <input
-                type={visible ? "text" : "password"}
-                name="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
-              {visible ? (
-                <AiOutlineEye
-                  className="absolute right-3 top-2.5 cursor-pointer text-gray-600 hover:text-blue-500 transition-colors"
-                  size={25}
-                  onClick={() => setVisible(false)}
-                />
-              ) : (
-                <AiOutlineEyeInvisible
-                  className="absolute right-3 top-2.5 cursor-pointer text-gray-600 hover:text-blue-500 transition-colors"
-                  size={25}
-                  onClick={() => setVisible(true)}
-                />
+
+            {/* Login Form */}
+            <form className="space-y-6" onSubmit={handleClickLogin}>
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                  <span className="block sm:inline">{error}</span>
+                </div>
               )}
+              
+              {/* Email Input */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  Email address
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <div className="mt-1 relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={visible ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVisible(!visible)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {visible ? (
+                      <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400" />
+                    ) : (
+                      <AiOutlineEye className="h-5 w-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div>
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Sign in
+                </button>
+              </div>
+            </form>
+
+            {/* Sign Up Link */}
+            <div className="text-center mt-4">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  Sign up
+                </Link>
+              </p>
             </div>
           </div>
-
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="remember-me"
-                id="remember-me"
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-            <div>
-              <a
-                href="/forgot-password"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
-              >
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-            >
-              Sign In
-            </button>
-          </div>
-
-          <div className="flex justify-center items-center mt-4 text-sm">
-            <span>Dont have an account?</span>
-            <Link
-              to="/signup"
-              className="text-blue-600 hover:text-blue-500 ml-2 font-medium transition-colors"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+        </div>
+    );
+}
 
 export default Login;
